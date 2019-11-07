@@ -30,12 +30,12 @@ namespace random_ass4 {
 			Console.Read();
 		}
 
-		private static void RngDistribution(Func<int> rngFunc, int maxValue, int reps, String rngType) {
+		private static void RngDistribution(Func<int> rngFunc, int maxValue, int reps, string rngType) {
 			Console.WriteLine(rngType);
 
 			long totalReps = ((long)maxValue) * reps;
 
-			// In order to get around memeory limits, we split the full results array 
+			// In order to get around memory limits, we split the full results array 
 			// into this many pieces
 			int pieces = 4;
 			// Each array is the same size
