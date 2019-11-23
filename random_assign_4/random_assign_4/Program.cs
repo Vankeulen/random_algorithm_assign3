@@ -17,16 +17,6 @@ namespace random_ass4 {
 			};
 			RngDistribution(csharpRng, int.MaxValue, 10, "C#: csharpRng");
 
-			long lseed = DateTime.Now.Ticks;
-			Func<int> srng = () => {
-				lseed = SRNG.hash(lseed);
-				int val = (int)lseed;
-				if (val == int.MinValue) { return 0; }
-				return (val < 0) ? -1 * val : val;
-			};
-			RngDistribution(srng, int.MaxValue, 10, "srng");
-
-
 			Console.Read();
 		}
 
@@ -102,50 +92,6 @@ namespace random_ass4 {
 				input = (ushort)(s1 ^ 0x8180);
 			}
 			return input;
-		}
-	}
-
-	/// <summary> Crude, Simple RNG </summary>
-	/// <remarks> 
-	///        <para> Provides both static and instance methods for random number generation. </para>
-	///        <para> Static methods can be used to generate random numbers from given information. </para>
-	///        <para> An instance of this class represents a stateful sequence of numbers. </para>
-	///        <para> Instances can be constructed with a given seed, so they generate the same sequence of numbers. </para>
-	///        <para> Otherwise, if not given a seed, they will use the current <see cref="System.DateTime.Now.Ticks"/> as the seed. </para>
-	/// </remarks>
-	public class SRNG {
-
-		/// <summary> BAAAARF </summary>
-		private const long c1 = 0xFFFF8000;
-		/// <summary> BRRAAAAAP </summary>
-		private const long c2 = 0x1F2FF3F4;//0x8BADF00D;
-										   /// <summary> PFFFFFFFT </summary>
-		private const long c3 = 0x83828180;//0x501D1F1D;
-
-		/// <summary> Hashes a <see cref="System.DateTime"/> by its Ticks </summary>
-		/// <param name="seed"> <see cref="System.DateTime"/> to hash </param>
-		/// <returns> Hash of <paramref name="seed"/> seed's Ticks </returns>
-		public static long hash(DateTime seed) { return hash(seed.Ticks); }
-
-		/// <summary> Gets the hash of a given <paramref name="seed"/>. </summary>
-		/// <param name="seed"> Value to use as seed </param>
-		/// <returns> Mostly randomly distributed value based on the input hash </returns>
-		public static long hash(long seed) {
-			long a1 = seed << 32;
-			long s0 = seed ^ a1;
-
-			long left = (int)s0;
-			long right = (int)(s0 >> 32);
-			long join = (left << 32) | right;
-
-			s0 = join ^ (s0 << 1);
-			long s1 = c1 ^ (s0 >> 1);
-
-			bool w = ((byte)s0) % 2 == 0;
-			long value = w ? c2 : c3;
-			value = s1 ^ value;
-
-			return value;
 		}
 	}
 }
