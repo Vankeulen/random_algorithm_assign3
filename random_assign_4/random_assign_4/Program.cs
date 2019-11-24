@@ -9,13 +9,19 @@ namespace random_ass4 {
 				seed = rng(seed);
 				return seed;
 			};
-			RngDistribution(sm64rng, ushort.MaxValue, 10, "Mario: sm64rng");
+			//RngDistribution(sm64rng, ushort.MaxValue, 10, "Mario: sm64rng");
 
 			Random rand = new Random();
 			Func<int> csharpRng = () => {
 				return rand.Next(int.MaxValue);
 			};
-			RngDistribution(csharpRng, int.MaxValue, 10, "C#: csharpRng");
+			//RngDistribution(csharpRng, int.MaxValue, 10, "C#: csharpRng");
+			
+			SelfRNG self = new SelfRNG(31337);
+			Func<int> selfRNG = () => {
+				return self.Next(int.MaxValue);
+			};
+			RngDistribution(selfRNG, int.MaxValue, 10, "SelfRNG");
 
 			Console.Read();
 		}
@@ -48,12 +54,14 @@ namespace random_ass4 {
 
 				int cnt = results[piece][part];
 				if (cnt > maxRepeat) {
-					// Console.WriteLine($"New record! {next} is {cnt}!");
+					Console.WriteLine($"New record! {next} is {cnt}!");
 					maxRepeat = cnt;
 				}
 
-				int p = ((int)((i * 100.0) / maxValue)) / reps;
-				if ((p > percent) && (p % 10 == 0)) {
+				//int p = ((int)((i * 100.0) / maxValue)) / reps;
+				int p = ((int)((i * 100.0) / maxValue));
+				if ((p > percent)) {
+				//if ((p > percent) && (p % 10 == 0)) {
 					Console.WriteLine(p + "% done...");
 					percent = p;
 
@@ -92,6 +100,28 @@ namespace random_ass4 {
 				input = (ushort)(s1 ^ 0x8180);
 			}
 			return input;
+		}
+	}
+
+	public class SelfRNG {
+
+		private long state;
+		public SelfRNG(long seed) {
+			state = seed;
+		}
+
+		public int Next(int bound) {
+			unchecked {
+
+				state ^= state >> 31;
+				state *= (long)0xDEADBEEFCAFEBABE;
+				state ^= state >> 32;
+				state *= (long)0xBAADF00DBAA4FFFF;
+				state ^= state >> 33;
+			
+				if (state < 0) { state *= -1; }
+				return ((int)(state & 0x7FFFFFFF)) % bound;
+			}
 		}
 	}
 }
